@@ -13,7 +13,7 @@ if __name__=='__main__':
                         help='-')
     parser.add_argument('env_file', type=str,
                         help='-')
-    parser.add_argument('time_limit', type=str, default = '01:00:00', required = False,
+    parser.add_argument('time_limit', type=str, default = '01:00:00', 
                         help='-')
 
     args = parser.parse_args()
