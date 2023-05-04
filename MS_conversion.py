@@ -1,4 +1,3 @@
-from utilities import *
 from pymsconvert.pymsconvert import *
 import argparse
 
@@ -19,4 +18,5 @@ if __name__=='__main__':
 
     C = Converter(in_dir, out_dir, thermoraw_path, env_file, slurm_home, time_limit = '01:00:00')
     f_list = C.get_file_list()
-    f_list
+
+    C.convert_slurm()
