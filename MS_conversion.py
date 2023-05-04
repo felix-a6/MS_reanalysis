@@ -19,7 +19,7 @@ if __name__=='__main__':
     args = parser.parse_args()
 
 
-    C = Converter(args['in_dir'], args['out_dir'], args['thermoraw_path'], args['env_file'], args['slurm_home'], args['time_limit'])
+    C = Converter(args.in_dir, args.out_dir, args.thermoraw_path, args.env_file, args.slurm_home, args.time_limit)
     f_list = C.get_file_list()
 
     C.convert_slurm()
