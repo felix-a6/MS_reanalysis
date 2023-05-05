@@ -23,7 +23,15 @@ if __name__=='__main__':
 
     files = [f for f in os.listdir(C.in_dir) if
         os.path.isfile(os.path.join(C.in_dir, f)) and C.in_format in f.lower()]
-    print(files)
+
+    files_exist = [ os.path.isfile(os.path.join(C.in_dir, f)) for f in os.listdir(C.in_dir)]
+
+    files_format =[ C.in_format in f.lower() for f in os.listdir(C.in_dir)]
+
+    print(C.in_dir)
+    print(files_exist)
+    print(files_format)
+    print(C.in_format)
 
     f_list = C.get_file_list()
 
