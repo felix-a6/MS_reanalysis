@@ -19,9 +19,12 @@ if __name__=='__main__':
 
     args = parser.parse_args()
 
-    print(os.listdir(args.in_dir))
-
     C = Converter(args.in_dir, args.out_dir, args.thermoraw_path, args.env_file, args.slurm_home, args.time_limit)
+
+    files = [f for f in os.listdir(C.in_dir) if
+        os.path.isfile(os.path.join(C.in_dir, f)) and C.in_format in f.lower()]
+    print(files)
+
     f_list = C.get_file_list()
 
     C.convert_slurm()
