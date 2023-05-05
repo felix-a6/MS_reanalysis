@@ -1,5 +1,6 @@
 from pymsconvert.pymsconvert import *
 import argparse
+import os
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='conversion_raw_to_mgf')
@@ -18,6 +19,7 @@ if __name__=='__main__':
 
     args = parser.parse_args()
 
+    print(os.listdir(args.in_dir))
 
     C = Converter(args.in_dir, args.out_dir, args.thermoraw_path, args.env_file, args.slurm_home, args.time_limit)
     f_list = C.get_file_list()
