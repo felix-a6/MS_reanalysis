@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #SBATCH --account=def-xroucou
-#SBATCH --time=02:00:00
+#SBATCH --time=05:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=4G
+#SBATCH --mem-per-cpu=10G
 #SBATCH --array=1
 
 module load java
@@ -19,7 +19,6 @@ echo "copying compomics"
 cp -R /home/felix6/scratch/RBC_MS_analysis/compomics $SLURM_TMPDIR
 searchgui_jar_path=$SLURM_TMPDIR/compomics/SearchGUI-4.2.12/SearchGUI-4.2.12.jar
 echo $searchgui_jar_path
-peptideshaker_jar_path=$SLURM_TMPDIR/compomics/PeptideShaker-2.2.25/PeptideShaker-2.2.25.jar
 
 mkdir $SLURM_TMPDIR/mgfs
 echo "copying $FILE"
@@ -72,5 +71,7 @@ java -Xmx27G -cp $searchgui_jar_path eu.isas.searchgui.cmd.SearchCLI \
 	-use_log_folder 0
 
 echo "copying output"
-cp $OUT_PATH/ /home/felix6/scratch/RBC_MS_analysis/
+mkdir /home/felix6/scratch/RBC_MS_analysis/searchgui_output
+ls $OUT_PATH
+cp -R $OUT_PATH /home/felix6/scratch/RBC_MS_analysis/searchgui_output/
 echo "output copied"
