@@ -1,19 +1,22 @@
 #!/bin/bash
 
 #SBATCH --account=def-xroucou
-#SBATCH --time=05:00:00
+#SBATCH --time=10:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=10G
 #SBATCH --array=1
 
 module load java
 
-FILE=$(sed -n "${SLURM_ARRAY_TASK_ID}p" /scratch/felix6/RBC_MS_analysis/whole_rbc_IP_lysis_6840_mgf/mgf_files_list.txt)
+FILE=$(sed -n "${SLURM_ARRAY_TASK_ID}p" /scratch/felix6/RBC_MS_analysis/whole_rbc_IP_lysis_6840_mgf/one_mgf_list.txt)
 EXP_NAME=${FILE%.mgf}
 OUT_PATH=$SLURM_TMPDIR/$EXP_NAME
 mkdir $OUT_PATH
 cp /home/felix6/scratch/RBC_MS_analysis/human_proteome_fasta/human_proteome_and_xavier.fasta $SLURM_TMPDIR
 search_db=$SLURM_TMPDIR/human_proteome_and_xavier.fasta
+
+JAVA_USER_HOME=$SLURM_TMPDIR/java_user_home
+mkdir $JAVA_USER_HOME
 
 echo "copying compomics"
 cp -R /home/felix6/scratch/RBC_MS_analysis/compomics $SLURM_TMPDIR
@@ -22,19 +25,20 @@ echo $searchgui_jar_path
 
 mkdir $SLURM_TMPDIR/mgfs
 echo "copying $FILE"
-cp /scratch/felix6/RBC_MS_analysis/whole_rbc_IP_lysis_6840_mgf/$FILE $SLURM_TMPDIR/mgfs
+cp /scratch/felix6/RBC_MS_analysis/whole_rbc_IP_lysis_6840_mgf/$FILE $SLURM_TMPDIR/mgfs/
 spectra_file=$SLURM_TMPDIR/mgfs/$FILE
+echo $spectra_file
 
 echo "will analyze $spectra_file, with decoy $search_db"
 
 tmp_dir=$SLURM_TMPDIR/tmp
 mkdir -p $tmp_dir
 
-java -cp $searchgui_jar_path eu.isas.searchgui.cmd.PathSettingsCLI \
+java -Duser.home=$JAVA_USER_HOME -cp $searchgui_jar_path eu.isas.searchgui.cmd.PathSettingsCLI \
 	-temp_folder $tmp_dir \
 	-use_log_folder 0
 
-java -cp $searchgui_jar_path eu.isas.searchgui.cmd.IdentificationParametersCLI \
+java -Duser.home=$JAVA_USER_HOME -cp $searchgui_jar_path eu.isas.searchgui.cmd.IdentificationParametersCLI \
 	-fixed_mods "Carbamidomethylation of C" \
 	-enzyme "Trypsin (no P rule)" \
 	-max_charge 5 \
@@ -54,7 +58,7 @@ java -cp $searchgui_jar_path eu.isas.searchgui.cmd.IdentificationParametersCLI \
 	-use_log_folder 0 \
 	-out $OUT_PATH/id_params.par
 
-java -Xmx27G -cp $searchgui_jar_path eu.isas.searchgui.cmd.SearchCLI \
+java -Duser.home=$JAVA_USER_HOME -Xmx27G -cp $searchgui_jar_path eu.isas.searchgui.cmd.SearchCLI \
 	-spectrum_files $spectra_file\
 	-fasta_file $search_db \
 	-output_folder $OUT_PATH \
